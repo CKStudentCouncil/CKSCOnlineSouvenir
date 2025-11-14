@@ -21,6 +21,7 @@ import ToastProvider, { useToast } from "./components/ToastContext";
 import ComingSoonPage from "./components/ComingoonPage";
 import ToolPage from "./components/ToolPage";
 import UpdatePage from "./components/UpdatePage";
+import CheckCartPage from "./components/CheckCartPage";
 
 const InfoPage = InformationPage;
 
@@ -225,6 +226,7 @@ function App() {
               <>
                 <button onClick={() => { navigate("/admin"); setDrawerOpen(false); }} style={drawerBtnStyle}>後台管理</button>
                 <button onClick={() => { navigate("/account"); setDrawerOpen(false); }} style={drawerBtnStyle}>帳號管理</button>
+                <button onClick={() => { navigate("/checkcart"); setDrawerOpen(false); }} style={drawerBtnStyle}>檢查購物車</button>
                 <button onClick={() => { navigate("/tool"); setDrawerOpen(false); }} style={drawerBtnStyle}>工具</button>
                 <button onClick={() => { navigate("/update"); setDrawerOpen(false); }} style={drawerBtnStyle}>更新</button>
               </>
@@ -318,6 +320,7 @@ function App() {
                   <Route path="/orders/:id" element={<OrderdetailPage />} />
                   <Route path="/tool" element={<ToolPage />} />
                   <Route path="/update" element={<UpdatePage />} />
+                  <Route path="/checkcart" element={<CheckCartPage />} />
                 </>
               ) : (
                 <>
