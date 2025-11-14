@@ -279,7 +279,7 @@ export default function AdminCartViewer() {
               onKeyPress={(e) => e.key === "Enter" && handleSearch()}
               style={{
                 flex: 1,
-                padding: "12px 16px",
+                MaxPadding: "12px 16px",
                 borderRadius: "8px",
                 border: "2px solid #e0e0e0",
                 fontSize: "1rem",
@@ -292,12 +292,12 @@ export default function AdminCartViewer() {
               disabled={isSearching}
               style={{
                 ...gradientBtnStyle,
-                padding: "12px 30px",
+                MaxPadding: "12px 30px",
                 opacity: isSearching ? 0.6 : 1,
                 cursor: isSearching ? "not-allowed" : "pointer"
               }}
             >
-              {isSearching ? "搜尋中..." : "🔍 搜尋"}
+              {isSearching ? "搜尋中..." : "搜尋"}
             </button>
           </div>
 
