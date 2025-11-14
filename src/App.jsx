@@ -228,7 +228,6 @@ function App() {
                 <button onClick={() => { navigate("/account"); setDrawerOpen(false); }} style={drawerBtnStyle}>帳號管理</button>
                 <button onClick={() => { navigate("/checkcart"); setDrawerOpen(false); }} style={drawerBtnStyle}>檢查購物車</button>
                 <button onClick={() => { navigate("/tool"); setDrawerOpen(false); }} style={drawerBtnStyle}>工具</button>
-                <button onClick={() => { navigate("/update"); setDrawerOpen(false); }} style={drawerBtnStyle}>更新</button>
               </>
             )}
             
