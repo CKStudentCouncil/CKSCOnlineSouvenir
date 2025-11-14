@@ -3,6 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ main ]   # 假設你的主要分支是 main
+  workflow_dispatch:
 
 permissions:
   contents: read
