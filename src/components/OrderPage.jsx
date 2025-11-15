@@ -205,7 +205,7 @@ export default function OrderPage() {
                       gap: "12px",
                       marginBottom: "8px"
                     }}>
-                      {/* 第一行：交貨狀態 */}
+                      {/* 第一行：交貨、付款狀態 */}
                       <div style={{
                         display: "flex",
                         justifyContent: "center"
@@ -222,6 +222,24 @@ export default function OrderPage() {
                           gap: "8px"
                         }}>
                           {order.delivered ? "✅ 已交貨" : "⏳ 未交貨"}
+                        </div>
+                      </div>
+                      <div style={{
+                        display: "flex",
+                        justifyContent: "center"
+                      }}>
+                        <div style={{
+                          background: order.paid ? "#dcfce7" : "#fef3c7",
+                          color: order.paidd ? "#166534" : "#92400e",
+                          padding: "10px 20px",
+                          borderRadius: "25px",
+                          fontSize: "1rem",
+                          fontWeight: "bold",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "8px"
+                        }}>
+                          {order.paid ? "✅ 已付款" : "⏳ 未付款"}
                         </div>
                       </div>
 
