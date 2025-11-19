@@ -522,14 +522,14 @@ export default function OrderdetailPage() {
         </div>
 
           {/* 客戶資料 */}
-          {(order.customerName || order.customerPhone || order.customerEmail || order.school || order.classNumber) && (
+          {(order.customerName || order.customerPhone || order.customerEmail || order.school || order.classNumber || order.classandnumber) && (
             <div style={{ background: "#eff6ff", border: "1px solid #dbeafe", borderRadius: "10px", padding: "12px", overflowWrap: "break-word" }}>
               <div style={{ color: "#1d4ed8", fontSize: "0.9rem", marginBottom: 4 }}>客戶資料</div>
               {order.customerName && <div style={{ fontSize: "0.9rem" }}>姓名：{order.customerName}</div>}
               {order.customerPhone && <div style={{ fontSize: "0.9rem" }}>電話：{order.customerPhone}</div>}
               {order.customerEmail && <div style={{ fontSize: "0.9rem",}}>Email：{order.customerEmail}</div>}
               {order.school && <div style={{ fontSize: "0.9rem" }}>學校：{order.school}</div>}
-              {order.classNumber && <div style={{ fontSize: "0.9rem" }}>班級座號：{order.classNumber}</div>}
+              {order.classNumber && <div style={{ fontSize: "0.9rem" }}>班級座號：{order.classNumber || order.classandnumber}</div>}
             </div>
           )}
         </div>

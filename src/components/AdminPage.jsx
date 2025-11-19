@@ -165,7 +165,7 @@ export default function AdminPage() {
               customerPhone: o.customerPhone || u.phone || "",
               customerEmail: o.customerEmail || u.email || "",
               school: o.school || u.school || "",
-              classNumber: o.classNumber || u.classNumber || "",
+              classNumber: o.classNumber || o.classandnumber || u.classNumber || u.classandnumber || "",
             };
           } catch {
             return o;
@@ -349,7 +349,7 @@ export default function AdminPage() {
           電話: itemIndex === 0 ? order.customerPhone || "" : "",
           Email: itemIndex === 0 ? order.customerEmail || "" : "",
           學校: itemIndex === 0 ? order.school || "" : "",
-          班級座號: itemIndex === 0 ? order.classNumber || "" : "",
+          班級座號: itemIndex === 0 ? order.classNumber || order.classandNumber || "" : "",
           商品名稱: item.name,
           數量: item.quantity,
           單價: item.price,
@@ -788,7 +788,7 @@ export default function AdminPage() {
                 <p><strong>折扣後金額:</strong> NT$ {order.finalTotal}</p>
                 <p><strong>購買時間:</strong> {order.createdAt?.toDate().toLocaleString()}</p>
                 {/* 客戶資料 */}
-                {(order.customerName || order.customerPhone || order.customerEmail || order.school || order.classNumber) && (
+                {(order.customerName || order.customerPhone || order.customerEmail || order.school || order.classNumber || order.classandnumber) && (
                   <div style={{ background: "#f0f9ff", border: "1px solid #e0f2fe", borderRadius: "8px", padding: "10px" }}>
                     <strong>客戶資料：</strong>
                     <ul style={{ marginTop: "6px" }}>
@@ -796,7 +796,7 @@ export default function AdminPage() {
                       {order.customerPhone && <li>電話：{order.customerPhone}</li>}
                       {order.customerEmail && <li>Email：{order.customerEmail}</li>}
                       {order.school && <li>學校：{order.school}</li>}
-                      {order.classNumber && <li>班級座號：{order.classNumber}</li>}
+                      {order.classNumber && <li>班級座號：{order.classNumber || order.classandnumber}</li>}
                     </ul>
                   </div>
                 )}
