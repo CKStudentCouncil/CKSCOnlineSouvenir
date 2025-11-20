@@ -18,6 +18,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
   const [selectedSchool, setSelectedSchool] = useState("all");
+  const [selectedPaymentStatus, setSelectedPaymentStatus] = useState("all");
   const navigate = useNavigate();
   const { showToast } = useToast();
   const [displayName, setDisplayName] = useState("");
@@ -450,7 +451,14 @@ export default function AdminPage() {
 
   // 根據選擇的學校和分頁篩選訂單
   const baseOrders = activeTab === "delivered" ? deliveredOrders : orders;
-  const currentOrders = filterOrdersBySchool(baseOrders);
+  let currentOrders = filterOrdersBySchool(baseOrders);
+  
+  if (selectedPaymentStatus === "paid") {
+    currentOrders = currentOrders.filter(o => o.paid);
+  } else if (selectedPaymentStatus === "unpaid") {
+    currentOrders = currentOrders.filter(o => !o.paid);
+  }
+
   const currentStats = calculateStatistics(currentOrders);
 
   return (
@@ -520,6 +528,42 @@ export default function AdminPage() {
           {schools.map(school => (
             <option key={school} value={school}>{school}</option>
           ))}
+        </select>
+      </div>
+
+      {/* 付款狀態篩選器 */}
+      <div style={{
+        marginBottom: "16px",
+        width: "100%",
+        maxWidth: "1000px"
+      }}>
+        <label style={{
+          display: "block",
+          marginBottom: "8px",
+          fontWeight: "600",
+          color: "#333",
+          fontSize: "0.95rem"
+        }}>
+          付款狀態：
+        </label>
+
+        <select
+          value={selectedPaymentStatus}
+          onChange={(e) => setSelectedPaymentStatus(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "10px 14px",
+            borderRadius: "8px",
+            border: "1px solid #ddd",
+            fontSize: "1rem",
+            cursor: "pointer",
+            background: "white",
+            outline: "none"
+          }}
+        >
+          <option value="all">全部</option>
+          <option value="paid">已付款</option>
+          <option value="unpaid">未付款</option>
         </select>
       </div>
 
