@@ -326,7 +326,7 @@ export default function AdminPage() {
       const endRow = currentRow + orderItemCount - 1;
 
       if (orderItemCount > 1) {
-        const mergeColumns = Array.from({ length: 18 }, (_, i) => i);
+        const mergeColumns = Array.from({ length: 17 }, (_, i) => i);
         mergeColumns.forEach(colIndex => {
           merges.push({ s:{r:startRow,c:colIndex}, e:{r:endRow,c:colIndex} });
         });
@@ -452,7 +452,7 @@ export default function AdminPage() {
   // 根據選擇的學校和分頁篩選訂單
   const baseOrders = activeTab === "delivered" ? deliveredOrders : orders;
   let currentOrders = filterOrdersBySchool(baseOrders);
-  
+
   if (selectedPaymentStatus === "paid") {
     currentOrders = currentOrders.filter(o => o.paid);
   } else if (selectedPaymentStatus === "unpaid") {
