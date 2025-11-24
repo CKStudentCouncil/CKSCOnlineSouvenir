@@ -17,6 +17,8 @@ export default function CartPage() {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const [displayName, setDisplayName] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [checkingAdmin, setCheckingAdmin] = useState(true);
   
   useEffect(() => {
     if (!user) return;
@@ -102,19 +104,34 @@ export default function CartPage() {
     return () => clearTimeout(timeoutId);
   }, [cartItems, user]);
 
-  const adminEmails = [
-    "ck11300333@gl.ck.tp.edu.tw",
-    "chris20090731@gmail.com",
-    "ck11300329@gl.ck.tp.edu.tw",
-    "ck11300569@gl.ck.tp.edu.tw",
-    "ck11300110@gl.ck.tp.edu.tw",
-    "ck11300044@gl.ck.tp.edu.tw",
-    "ck11300307@gl.ck.tp.edu.tw",
-    "ck11300554@gl.ck.tp.edu.tw",
-    "stud2@gl.ck.tp.edu.tw",
-  ];
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      if (!user) {
+        setIsAdmin(false);
+        setCheckingAdmin(false);
+        return;
+      }
 
-  const isAdmin = user?.email && adminEmails.includes(user.email);
+      try {
+        const userRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userRef);
+        
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setIsAdmin(userData.role === "admin");
+        } else {
+          setIsAdmin(false);
+        }
+      } catch (error) {
+        console.error("檢查管理員權限失敗:", error);
+        setIsAdmin(false);
+      } finally {
+        setCheckingAdmin(false);
+      }
+    };
+
+    checkAdminStatus();
+  }, [user]);
 
   const checkComboDeals = () => {
     const itemQuantities = {};
