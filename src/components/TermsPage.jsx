@@ -9,7 +9,8 @@ export default function ProductPage() {
       minHeight: "100vh",
       padding: "40px 20px",
       display: "flex",
-      justifyContent: "center"
+      justifyContent: "center",
+      fontFamily: "'Klee One', cursive",
     }}>
       <div style={{
         width: "100%",

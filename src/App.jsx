@@ -22,12 +22,16 @@ import ComingSoonPage from "./components/ComingoonPage";
 import ToolPage from "./components/ToolPage";
 import UpdatePage from "./components/UpdatePage";
 import CheckCartPage from "./components/CheckCartPage";
+import EndPage from "./components/EndPage";
 
 const InfoPage = InformationPage;
 
 const starttime = new Date("2025-11-05T12:00:00+08:00");
+//const endtime = new Date("2025-11-20T11:00:59+08:00");
+const endtime = new Date("2025-11-28T13:00:00+08:00");
 const now = new Date();
 const isAfterStartTime = now >= starttime;
+const isAfterEndTime = now >= endtime;
 const isinfoPage = window.location.pathname === "/info";
 
 function App() {
@@ -310,7 +314,7 @@ function App() {
             </>
           ) : (
             <>
-              {isAfterStartTime ? (
+              {isAfterStartTime && !isAfterEndTime ? (
                 <>
                   <Route path="/" element={<HomePage />} />
                   <Route path="/product/:id" element={<ProductPage />} />
@@ -321,31 +325,54 @@ function App() {
                   <Route path="/update" element={<UpdatePage />} />
                   <Route path="/checkcart" element={<CheckCartPage />} />
                 </>
-              ) : (
-                <>
-                  <Route path="/comingsoon" element={<ComingSoonPage />} />
-                  <Route
-                    path="/"
-                    element={hasManagePermission ? <HomePage /> : <Navigate to="/info" replace />}
-                  />
-                  <Route
-                    path="/product/:id"
-                    element={hasManagePermission ? <ProductPage /> : <Navigate to="/comingsoon" replace />}
-                  />
-                  <Route
-                    path="/cart"
-                    element={hasManagePermission ? <CartPage /> : <Navigate to="/comingsoon" replace />}
-                  />
-                  <Route
-                    path="/orders"
-                    element={hasManagePermission ? <OrdersPage /> : <Navigate to="/comingsoon" replace />}
-                  />
-                  <Route
-                    path="/orders/:id"
-                    element={hasManagePermission ? <OrderdetailPage /> : <Navigate to="/comingsoon" replace />}
-                  />
-                </>
-              )}
+              ) : isAfterEndTime ? (
+                  <>
+                    <Route path="/end" element={<EndPage />} />
+                    <Route
+                      path="/"
+                      element={hasManagePermission ? <HomePage /> : <Navigate to="/end" replace />}
+                    />
+                    <Route
+                      path="/product/:id"
+                      element={hasManagePermission ? <ProductPage /> : <Navigate to="/end" replace />}
+                    />
+                    <Route
+                      path="/cart"
+                      element={hasManagePermission ? <CartPage /> : <Navigate to="/end" replace />}
+                    />
+                    <Route
+                      path="/orders"
+                      element={<OrdersPage />}
+                    />
+                    <Route
+                      path="/orders/:id"
+                      element={hasManagePermission ? <OrderdetailPage /> : <Navigate to="/end" replace />}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <Route
+                      path="/"
+                      element={hasManagePermission ? <HomePage /> : <Navigate to="/info" replace />}
+                    />
+                    <Route
+                      path="/product/:id"
+                      element={hasManagePermission ? <ProductPage /> : <Navigate to="/comingsoon" replace />}
+                    />
+                    <Route
+                      path="/cart"
+                      element={hasManagePermission ? <CartPage /> : <Navigate to="/comingsoon" replace />}
+                    />
+                    <Route
+                      path="/orders"
+                      element={hasManagePermission ? <OrdersPage /> : <Navigate to="/comingsoon" replace />}
+                    />
+                    <Route
+                      path="/orders/:id"
+                      element={hasManagePermission ? <OrderdetailPage /> : <Navigate to="/comingsoon" replace />}
+                    />
+                  </>
+                )}
               {/* 管理員專屬頁面 */}
               <Route
                 path="/admin"
