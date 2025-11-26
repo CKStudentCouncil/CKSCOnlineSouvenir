@@ -299,6 +299,34 @@ export default function OrderPage() {
                       </div>
                     </div>
 
+                    {/* QR Code */}
+                    <div style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: "8px",
+                      background: "#f8fafc",
+                      padding: "16px",
+                      borderRadius: "8px"
+                    }}>
+                      {(() => {
+                        const baseUrl = (import.meta && import.meta.env && import.meta.env.VITE_PUBLIC_BASE_URL) || window.location.origin;
+                        const url = `${baseUrl}/orders/${order.id}`;
+                        return (
+                          <>
+                          <div style={{
+                              fontSize: "0.8rem",
+                              color: "#666",
+                              textAlign: "center"
+                            }}>
+                              繳費時請出示此 QR Code
+                            </div>
+                            <QRCodeCanvas value={url} size={120} />
+                          </>
+                        );
+                      })()}
+                    </div>
+
                     {/* 主要訂單資訊 */}
                     <div style={{ 
                       background: "#f8fafc", 
@@ -473,34 +501,6 @@ export default function OrderPage() {
                         </div>
                       </div>
                     )}
-
-                    {/* QR Code */}
-                    <div style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      gap: "8px",
-                      background: "#f8fafc",
-                      padding: "16px",
-                      borderRadius: "8px"
-                    }}>
-                      {(() => {
-                        const baseUrl = (import.meta && import.meta.env && import.meta.env.VITE_PUBLIC_BASE_URL) || window.location.origin;
-                        const url = `${baseUrl}/orders/${order.id}`;
-                        return (
-                          <>
-                            <QRCodeCanvas value={url} size={120} />
-                            <div style={{
-                              fontSize: "0.8rem",
-                              color: "#666",
-                              textAlign: "center"
-                            }}>
-                              掃描查看訂單詳情
-                            </div>
-                          </>
-                        );
-                      })()}
-                    </div>
                   </div>
                 </div>
               ))}
