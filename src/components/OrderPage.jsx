@@ -476,7 +476,7 @@ export default function OrderPage() {
                         }}>
                           {order.appliedCombos.map(combo => (
                             <li key={combo.id} style={{ marginBottom: "6px" }}>
-                              <div>{combo.name} × {combo.applicableCount}</div>
+                              <div>{combo.name} X {combo.applicableCount}</div>
                               <div style={{ 
                                 color: "#be185d", 
                                 fontSize: "0.85rem",
