@@ -55,7 +55,7 @@ export default function EndPage() {
                     本次網路預購服務已結束<br />
                     感謝您的支持<br />
                     如您仍有購買需求<br />
-                    請於校慶當日至班聯會攤位選購<br /><br />
+                    <div style={{color: "red"}}>請於校慶當日至班聯會攤位選購<br /><br /></div>
                     Thank you for your support!<br />
                     The online pre-order service has ended.<br /><br />
                     <strong style={{color:"#0c1b7a", fontSize:"24px"}}>校慶日期：2025年12月06日（六）<br />

@@ -308,6 +308,8 @@ function App() {
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/info" element={<InfoPage />} />
+          <Route path="/comingsoon" element={<ComingSoonPage />} />
+          <Route path="/end" element={<EndPage />} />
           {!user ? (
             <>
               <Route path="*" element={<AuthPage />} />

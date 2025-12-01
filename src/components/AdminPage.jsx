@@ -251,14 +251,45 @@ export default function AdminPage() {
   };
 
   // 匯出 Excel
+  // 修正版 exportToExcel，加入付款狀態篩選 & 班級座號排序
+  // 只需取代原本的 exportToExcel 即可使用
+
   const exportToExcel = (onlyDelivered = false) => {
-    const baseOrders = onlyDelivered ? deliveredOrders : orders;
-    const exportOrders = filterOrdersBySchool(baseOrders);
+    //=== 1. 基礎篩選 ===//
+    let baseOrders = onlyDelivered ? deliveredOrders : orders;
+    baseOrders = filterOrdersBySchool(baseOrders);
+
+    //=== 2. 套用付款狀態篩選（原本匯出沒套用 → 錯誤來源） ===//
+    if (selectedPaymentStatus === "paid") {
+      baseOrders = baseOrders.filter(o => o.paid);
+    } else if (selectedPaymentStatus === "unpaid") {
+      baseOrders = baseOrders.filter(o => !o.paid);
+    }
+
+    //=== 3. 班級座號排序 5 碼格式：YYYCC 例：10101 ===//
+    const validOrders = [];
+    const invalidOrders = [];
+
+    baseOrders.forEach(order => {
+      const cn = String(order.classNumber || order.classandnumber || '').trim();
+      if (/^\d{5}$/.test(cn)) {
+        validOrders.push(order);
+      } else {
+        invalidOrders.push(order);
+      }
+    });
+
+    // 依班級座號排序（小→大）
+    validOrders.sort((a, b) => Number(a.classNumber) - Number(b.classNumber));
+
+    // 排序後 + 放入不合法的（置後）
+    const exportOrders = [...validOrders, ...invalidOrders];
+
     const exportStats = calculateStatistics(exportOrders);
-    
+
     const summaryData = [];
 
-    // 商品統計
+    //=== 商品統計 ===//
     Object.entries(exportStats.productCounts).forEach(([name, total]) => {
       summaryData.push({
         項目名稱: name,
@@ -268,15 +299,12 @@ export default function AdminPage() {
       });
     });
 
-    // 套餐統計
+    //=== 套餐統計 ===//
     Object.entries(exportStats.comboCounts).forEach(([comboName, count]) => {
-      const comboInstances = exportOrders.flatMap(o => o.appliedCombos || [])
+      const combos = exportOrders.flatMap(o => o.appliedCombos || [])
         .filter(c => c.name === comboName);
 
-      let comboDiscountTotal = comboInstances.reduce(
-        (sum, combo) => sum + (combo.totalDiscount || 0),
-        0
-      );
+      let comboDiscountTotal = combos.reduce((sum, c) => sum + (c.totalDiscount || 0), 0);
 
       summaryData.push({
         項目名稱: comboName,
@@ -290,17 +318,17 @@ export default function AdminPage() {
     summaryData.push({ 項目名稱: "折扣總額", 總數量: "-", 總金額: exportStats.totalDiscount });
     summaryData.push({ 項目名稱: "總營收", 總數量: "-", 總金額: exportStats.totalRevenue });
 
-    // 如果是已交貨統計,加入交貨人員統計
+    //=== 已交貨統計 ===//
     if (onlyDelivered) {
-      const filteredDeliveryStats = calculateDeliveryStats(exportOrders);
-      if (Object.keys(filteredDeliveryStats).length > 0) {
+      const deliveryStats = calculateDeliveryStats(exportOrders);
+      if (Object.keys(deliveryStats).length > 0) {
         summaryData.push({});
         summaryData.push({ 項目名稱: "=== 交貨人員統計 ===", 總數量: "", 總金額: "" });
-        Object.entries(filteredDeliveryStats).forEach(([updater, stats]) => {
+        Object.entries(deliveryStats).forEach(([updater, info]) => {
           summaryData.push({
             項目名稱: `${updater} (交貨員)`,
-            總數量: `${stats.count} 筆訂單`,
-            總金額: `NT$ ${stats.totalAmount}`,
+            總數量: `${info.count} 筆訂單`,
+            總金額: `NT$ ${info.totalAmount}`,
             類型: "交貨統計"
           });
         });
@@ -309,48 +337,55 @@ export default function AdminPage() {
 
     const productSheet = XLSX.utils.json_to_sheet(summaryData);
 
-    // 訂單明細
+    ///////////////////////////////////////////////////////////////////////////
+    //🟦 訂單明細產生
+    ///////////////////////////////////////////////////////////////////////////
     const orderRows = [];
     const merges = [];
     let currentRow = 1;
+
     exportOrders.forEach(order => {
       const createdAt = order.createdAt?.toDate ? order.createdAt.toDate().toLocaleString() : "";
       const deliveryTime = order.deliveryUpdatedAt?.toDate ? order.deliveryUpdatedAt.toDate().toLocaleString() : "";
-      const deliveryBy = order.deliveryUpdatedByName || "";
-      const deliveryStatus = order.delivered ? "已交貨" : "未交貨";
       const paymentTime = order.paymentUpdatedAt?.toDate ? order.paymentUpdatedAt.toDate().toLocaleString() : "";
-      const paymentBy = order.paymentUpdatedByName || "";
-      const paymentStatus = order.paid ? "已付款" : "未付款";
-      const orderItemCount = order.items.length;
-      const startRow = currentRow;
-      const endRow = currentRow + orderItemCount - 1;
 
-      if (orderItemCount > 1) {
+      const deliveryBy = order.deliveryUpdatedByName || "";
+      const paymentBy = order.paymentUpdatedByName || "";
+
+      const deliveryStatus = order.delivered ? "已交貨" : "未交貨";
+      const paymentStatus = order.paid ? "已付款" : "未付款";
+
+      const itemCount = order.items.length;
+      const startRow = currentRow;
+      const endRow = currentRow + itemCount - 1;
+
+      //=== 合併儲存格 ===//
+      if (itemCount > 1) {
         const mergeColumns = Array.from({ length: 17 }, (_, i) => i);
-        mergeColumns.forEach(colIndex => {
-          merges.push({ s:{r:startRow,c:colIndex}, e:{r:endRow,c:colIndex} });
+        mergeColumns.forEach(col => {
+          merges.push({ s: { r: startRow, c: col }, e: { r: endRow, c: col } });
         });
       }
 
-      order.items.forEach((item, itemIndex) => {
+      order.items.forEach((item, idx) => {
         orderRows.push({
-          訂單ID: itemIndex === 0 ? order.id : "",
-          建立時間: itemIndex === 0 ? createdAt : "",
-          訂單原價: itemIndex === 0 ? order.originalTotal : "",
-          組合包: itemIndex === 0 ? (order.appliedCombos?.map(c => `${c.name} x ${c.applicableCount}`).join(", ") || "") : "",
-          折扣金額: itemIndex === 0 ? order.totalDiscount : "",
-          訂單總金額: itemIndex === 0 ? order.finalTotal : "",
-          交貨狀態: itemIndex === 0 ? deliveryStatus : "",
-          交貨更新時間: itemIndex === 0 ? deliveryTime : "",
-          交貨更新者: itemIndex === 0 ? deliveryBy : "",
-          付款狀態: itemIndex === 0 ? paymentStatus : "",
-          付款更新時間: itemIndex === 0 ? paymentTime : "",
-          付款更新者: itemIndex === 0 ? paymentBy : "",
-          客戶姓名: itemIndex === 0 ? order.customerName || "" : "",
-          電話: itemIndex === 0 ? order.customerPhone || "" : "",
-          Email: itemIndex === 0 ? order.customerEmail || "" : "",
-          學校: itemIndex === 0 ? order.school || "" : "",
-          班級座號: itemIndex === 0 ? order.classNumber || order.classandNumber || "" : "",
+          訂單ID: idx === 0 ? order.id : "",
+          建立時間: idx === 0 ? createdAt : "",
+          訂單原價: idx === 0 ? order.originalTotal : "",
+          組合包: idx === 0 ? (order.appliedCombos?.map(c => `${c.name} x ${c.applicableCount}`).join(", ") || "") : "",
+          折扣金額: idx === 0 ? order.totalDiscount : "",
+          訂單總金額: idx === 0 ? order.finalTotal : "",
+          交貨狀態: idx === 0 ? deliveryStatus : "",
+          交貨更新時間: idx === 0 ? deliveryTime : "",
+          交貨更新者: idx === 0 ? deliveryBy : "",
+          付款狀態: idx === 0 ? paymentStatus : "",
+          付款更新時間: idx === 0 ? paymentTime : "",
+          付款更新者: idx === 0 ? paymentBy : "",
+          客戶姓名: idx === 0 ? (order.customerName || "") : "",
+          電話: idx === 0 ? (order.customerPhone || "") : "",
+          Email: idx === 0 ? (order.customerEmail || "") : "",
+          學校: idx === 0 ? (order.school || "") : "",
+          班級座號: idx === 0 ? (order.classNumber || order.classandnumber || "") : "",
           商品名稱: item.name,
           數量: item.quantity,
           單價: item.price,
@@ -363,6 +398,9 @@ export default function AdminPage() {
     const ordersSheet = XLSX.utils.json_to_sheet(orderRows);
     if (merges.length > 0) ordersSheet['!merges'] = merges;
 
+    ///////////////////////////////////////////////////////////////////////////
+    //🟦 設定欄寬
+    ///////////////////////////////////////////////////////////////////////////
     ordersSheet['!cols'] = [
       { wch: 15 }, { wch: 20 }, { wch: 12 }, { wch: 20 }, { wch: 12 }, { wch: 12 },
       { wch: 10 }, { wch: 20 }, { wch: 12 }, { wch: 10 }, { wch: 20 }, { wch: 12 },
@@ -371,18 +409,25 @@ export default function AdminPage() {
     ];
     productSheet['!cols'] = [{ wch: 20 }, { wch: 10 }, { wch: 12 }, { wch: 10 }];
 
-    const workbook = XLSX.utils.book_new();
-    const schoolPrefix = selectedSchool !== "all" ? `${selectedSchool}_` : "";
-    const sheetPrefix = onlyDelivered ? "已交貨" : "全部";
-    XLSX.utils.book_append_sheet(workbook, productSheet, `${sheetPrefix}商品統計`);
-    XLSX.utils.book_append_sheet(workbook, ordersSheet, `${sheetPrefix}訂單明細`);
+    ///////////////////////////////////////////////////////////////////////////
+    //🟦 匯出 Excel
+    ///////////////////////////////////////////////////////////////////////////
+    const wb = XLSX.utils.book_new();
 
-    const filename = `${schoolPrefix}${onlyDelivered ? '已交貨' : ''}訂單統計_${new Date().toISOString().slice(0,10)}.xlsx`;
-    
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const schoolPrefix = selectedSchool !== "all" ? `${selectedSchool}_` : "";
+    const tabPrefix = onlyDelivered ? "已交貨" : "全部";
+
+    XLSX.utils.book_append_sheet(wb, productSheet, `${tabPrefix}商品統計`);
+    XLSX.utils.book_append_sheet(wb, ordersSheet, `${tabPrefix}訂單明細`);
+
+    const filename = `${schoolPrefix}${tabPrefix}訂單統計_${new Date().toISOString().slice(0,10)}.xlsx`;
+
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     saveAs(new Blob([excelBuffer], { type: "application/octet-stream" }), filename);
-    showToast(`✅ ${selectedSchool !== "all" ? selectedSchool + ' ' : ''}${onlyDelivered ? '已交貨' : '全部'} Excel 已匯出`);
+
+    showToast(`✅ 已匯出：${filename}`);
   };
+
 
   // 檢查中
   if (checkingAdmin) {
