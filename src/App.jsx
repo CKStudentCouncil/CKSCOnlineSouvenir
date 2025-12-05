@@ -352,11 +352,11 @@ function App() {
                     />
                     <Route
                       path="/tool"
-                      element={hasManagePermission ? <ToolPage /> : <Navigate to="/end" replace />
+                      element={hasManagePermission ? <ToolPage /> : <Navigate to="/end" replace />}
                     />
                     <Route
                       path="/update"
-                      element={hasManagePermission ? <UpdatePage /> : <Navigate to="/end" replace />
+                      element={hasManagePermission ? <UpdatePage /> : <Navigate to="/end" replace />}
                     />
                   </>
                 ) : (
