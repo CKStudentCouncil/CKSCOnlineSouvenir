@@ -428,6 +428,118 @@ export default function AdminPage() {
     showToast(`✅ 已匯出：${filename}`);
   };
 
+  const exportMissingInfo = () => {
+
+    //=== 依照目前的學校選擇篩選 ===//
+    let filtered = filterOrdersBySchool(orders);
+
+    //=== 套用付款狀態 ===//
+    if (selectedPaymentStatus === "paid") {
+      filtered = filtered.filter(o => o.paid);
+    } else if (selectedPaymentStatus === "unpaid") {
+      filtered = filtered.filter(o => !o.paid);
+    }
+
+    //=== 判斷哪些算是缺漏 ===//
+    const incomplete = filtered.filter(o => {
+      const missingName = !o.customerName;
+      const missingPhone = !o.customerPhone;
+      const missingEmail = !o.customerEmail;
+      const missingSchool = !o.school;
+
+      const classNumber = o.classNumber || o.classandnumber;
+      const missingClass = !classNumber;
+
+      // ⭐ 新規則：
+      // 只有「建國中學」，缺班級座號才算缺漏
+      const classIsMissingByRule =
+        o.school === "建國中學" ? missingClass : false;
+
+      return (
+        missingName ||
+        missingPhone ||
+        missingEmail ||
+        missingSchool ||
+        classIsMissingByRule
+      );
+    });
+
+    if (incomplete.length === 0) {
+      showToast("🎉 沒有缺漏資料的訂單（符合目前篩選條件）！");
+      return;
+    }
+
+    //=== 座號排序 ===//
+    const valid = [];
+    const invalid = [];
+
+    incomplete.forEach(o => {
+      const cn = String(o.classNumber || o.classandnumber || "").trim();
+      if (/^\d{5}$/.test(cn)) valid.push(o);
+      else invalid.push(o);
+    });
+
+    valid.sort((a,b)=> Number(a.classNumber) - Number(b.classNumber));
+    const sortedOrders = [...valid, ...invalid];
+
+    //=== 整理商品資訊 ===//
+    const formatItems = (items = []) => {
+      return items
+        .map(it => `${it.name} x${it.quantity}`)
+        .join("；");
+    };
+
+    //=== 匯出資料 ===//
+    const rows = sortedOrders.map(o => {
+      const classNumber = o.classNumber || o.classandnumber;
+
+      return {
+        訂單ID: o.id,
+        學校: o.school || "❌ 缺",
+        班級座號: classNumber || (o.school === "建國中學" ? "❌ 缺" : ""),
+        客戶姓名: o.customerName || "❌ 缺",
+        電話: o.customerPhone || "❌ 缺",
+        Email: o.customerEmail || "❌ 缺",
+        商品: formatItems(o.items || []), // ⭐ 新增：他買了什麼
+        訂單總額: o.finalTotal || 0,
+        建立時間: o.createdAt?.toDate ? o.createdAt.toDate().toLocaleString() : "",
+        付款: o.paid ? "已付款" : "未付款",
+        交貨: o.delivered ? "已交貨" : "未交貨",
+        
+        // ⭐ 額外顯示缺漏哪些欄位
+        缺少資料: [
+          !o.customerName && "姓名",
+          !o.customerPhone && "電話",
+          !o.customerEmail && "Email",
+          !o.school && "學校",
+          (o.school === "建國中學" && !classNumber) && "班級座號(建國中學必填)",
+        ].filter(Boolean).join("、")
+      };
+    });
+
+    //=== 輸出 Excel ===//
+    const sheet = XLSX.utils.json_to_sheet(rows);
+    sheet["!cols"] = [
+      { wch: 20 }, { wch: 18 }, { wch: 12 },
+      { wch: 12 }, { wch: 14 }, { wch: 25 },
+      { wch: 35 },  // 商品欄
+      { wch: 12 }, { wch: 22 },
+      { wch: 10 }, { wch: 10 },
+      { wch: 25 }   // 缺少資料
+    ];
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, sheet, "缺漏資料訂單");
+
+    const schoolPrefix = selectedSchool !== "all" ? `${selectedSchool}_` : "";
+    const filename = `${schoolPrefix}缺漏資料訂單_${new Date().toISOString().slice(0,10)}.xlsx`;
+
+    const buffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    saveAs(new Blob([buffer], { type: "application/octet-stream" }), filename);
+
+    showToast(`⚠️ 已匯出缺漏資料訂單 (${sortedOrders.length} 筆)`);
+  };
+
 
   // 檢查中
   if (checkingAdmin) {
@@ -775,6 +887,25 @@ export default function AdminPage() {
           >
             📊 匯出 Excel
           </button>
+          <button
+            onClick={exportMissingInfo}
+            style={{
+              padding: "14px 28px",
+              background: "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
+              color: "white",
+              border: "none",
+              borderRadius: "10px",
+              fontWeight: "bold",
+              fontSize: "1rem",
+              cursor: "pointer",
+              boxShadow: "0 4px 12px rgba(6,182,212,0.25)",
+              alignSelf: "flex-start",
+              whiteSpace: "nowrap"
+            }}
+          >
+            ⚠️ 匯出缺漏資料訂單
+          </button>
+
         </div>
 
         {/* 已交貨統計專屬：交貨人員統計 */}
