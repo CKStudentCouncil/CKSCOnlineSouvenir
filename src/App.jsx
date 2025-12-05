@@ -350,6 +350,14 @@ function App() {
                       path="/orders/:id"
                       element={hasManagePermission ? <OrderdetailPage /> : <Navigate to="/end" replace />}
                     />
+                    <Route
+                      path="/tool"
+                      element={hasManagePermission ? <ToolPage /> : <Navigate to="/end" replace />
+                    />
+                    <Route
+                      path="/update"
+                      element={hasManagePermission ? <UpdatePage /> : <Navigate to="/end" replace />
+                    />
                   </>
                 ) : (
                   <>
