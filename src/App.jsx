@@ -392,6 +392,10 @@ function App() {
                 path="/account"
                 element={user.isAdmin ? <AccountPage /> : <Navigate to="/" replace />}
               />
+              <Route 
+                path="/tool"
+                element={user.isAdmin ? <ToolPage /> : <Navigate to="/" replace />}
+              />
               <Route path="*" element={<Navigate to="/" replace />} />
             </>
           )}
