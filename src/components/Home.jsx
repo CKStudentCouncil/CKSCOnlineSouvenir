@@ -9,7 +9,40 @@ export default function Home() {
 
   return (
     <div style={{ padding: "20px" }}>
-      {/* 套餐說明 */}
+      <div
+        style={{
+          marginBottom: "30px",
+          padding: "25px",
+          background: "rgba(255, 255, 255, 0.1)",
+          backdropFilter: "blur(10px)",
+          borderRadius: "20px",
+          border: "1px solid rgba(255, 255, 255, 0.3)",
+          color: "black",
+          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",
+        }}
+      >
+        <h2 style={{ margin: "0 0 15px 0", textAlign: "center" }}>校慶優惠</h2>
+        <p
+          style={{
+            textAlign: "center",
+            marginBottom: "20px",
+            background: "#ffe7e7ff",
+            border: "1px solid #ff0000ff",
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "15px",
+            justifyContent: "center",
+            color: "#a10d0dff",
+            padding: "15px",
+            borderRadius: "10px",
+            backdropFilter: "blur(10px)",
+            minWidth: "200px",
+          }}
+        >
+          限時優惠，只有在校慶當天享有！
+          </p>
+      </div>
+      {/* 套餐說明 
       <div
         style={{
           marginBottom: "30px",
@@ -57,7 +90,7 @@ export default function Home() {
           DM上棒球外套誤植為650元，實際價格應為700元，一切價格均以網站為準，造成不便敬請見諒！
         </p>
 
-        {/* 套餐卡片 */}
+        {/* 套餐卡片 
         <div
           style={{
             display: "flex",
@@ -121,7 +154,7 @@ export default function Home() {
             </div>
           ))}
         </div>
-      </div>
+      </div>*/}
 
       {/* 商品列表 */}
       <div

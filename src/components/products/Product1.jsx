@@ -60,8 +60,8 @@ export default function Product1() {
           <div style={{textDecoration: "line-through", opacity: 0.7}}>
             NT$ 900 
           </div>
-          早鳥優惠價：
-          NT$ 700
+          校慶特惠價：
+          NT$ 750
         </div>
 
         {/* 商品圖片示意 */}

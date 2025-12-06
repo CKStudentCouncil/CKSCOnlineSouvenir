@@ -13,7 +13,7 @@ export default function Product6() {
     no: 6,
     id: 6,    
     name: "黑色側背包",
-    price: 750,
+    price: 800,
     orPrice: 950,
   };
 
@@ -60,7 +60,7 @@ export default function Product6() {
             NT$ 950
           </div>
           早鳥優惠價：
-          NT$ 750
+          NT$ 800
         </div>
 
         {/* 商品圖片示意 */}

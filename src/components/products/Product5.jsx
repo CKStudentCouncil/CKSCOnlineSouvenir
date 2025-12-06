@@ -13,7 +13,7 @@ export default function Product5() {
     no: 5,
     id: 5,
     name: "雙色毛巾",
-    price: 200,
+    price: 250,
     specifications: {
       size: "100 x 30 cm",
     }
@@ -61,8 +61,8 @@ export default function Product5() {
           <div style={{textDecoration: "line-through", opacity: 0.7}}>
             NT$ 400 
           </div>
-          早鳥優惠價：
-          NT$ 200
+          校慶特惠價：
+          NT$ 250
         </div>
 
         {/* 商品圖片示意 */}

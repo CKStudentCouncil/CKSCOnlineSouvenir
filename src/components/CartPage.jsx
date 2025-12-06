@@ -233,7 +233,7 @@ export default function CartPage() {
         appliedCombos: [],
         prPackageApplied: true,
         prPackageDiscount: originalTotal,
-        qualifiesForGift: false,
+        //qualifiesForGift: false,
         giftDiscount: 0,
         hasAvailableGift: false,
         totalGiftQuantity: 0,
@@ -247,9 +247,9 @@ export default function CartPage() {
     const totalAfterCombo = originalTotal - comboResult.totalDiscount;
     
     let giftDiscount = 0;
-    let qualifiesForGift = false;
+    //let qualifiesForGift = false;
     
-    if (hasAvailableGift) {
+    /*if (hasAvailableGift) {
       const firstGiftItem = giftItems[0];
       if (firstGiftItem) {
         const totalAfterGiftDiscount = totalAfterCombo - firstGiftItem.price;
@@ -258,7 +258,7 @@ export default function CartPage() {
           giftDiscount = firstGiftItem.price;
         }
       }
-    }
+    }*/
     
     const reachedThreshold = totalAfterCombo >= 1000;
     
@@ -281,7 +281,7 @@ export default function CartPage() {
       remainingItems: comboResult.remainingItems,
       prPackageApplied: false,
       prPackageDiscount: 0,
-      qualifiesForGift,
+      //qualifiesForGift,
       giftDiscount,
       hasAvailableGift,
       totalGiftQuantity,
@@ -300,13 +300,13 @@ export default function CartPage() {
     appliedCombos, 
     prPackageApplied, 
     prPackageDiscount, 
-    qualifiesForGift, 
+    //qualifiesForGift, 
     giftDiscount, 
     hasAvailableGift,
     totalGiftQuantity,
     giftUsedInCombo,
     availableGiftCount,
-    reachedThreshold
+    //reachedThreshold
   } = calculatePricing();
 
   const handleQuantityChange = (itemId, change) => {
@@ -362,7 +362,7 @@ export default function CartPage() {
         prPackageUsed: prPackageApplied,
         prPackageDiscount: prPackageApplied ? prPackageDiscount : 0,
         isAdminOrder: isAdmin,
-        qualifiesForGift: qualifiesForGift && !prPackageApplied,
+        //qualifiesForGift: qualifiesForGift && !prPackageApplied,
         giftDiscount: giftDiscount,
         hasAvailableGift: hasAvailableGift,
         totalGiftQuantity: totalGiftQuantity,
@@ -471,7 +471,7 @@ export default function CartPage() {
                 </div>
               </div>
             )}
-
+            {/*
             {!prPackageApplied && appliedCombos.length > 0 && (
               <div style={{ marginTop: "20px", padding: "16px", background: "#fff0f6", borderRadius: "10px", border: "1px solid #f9c2d3" }}>
                 <div style={{ color: "#d63384", fontWeight: "bold", fontSize: "1.1rem", marginBottom: "12px" }}>🎉 套餐折扣</div>
@@ -525,7 +525,7 @@ export default function CartPage() {
                   )}
                 </div>
               </div>
-            )}
+            )}*/}
 
             <div style={{ marginTop: "24px", padding: "20px", background: "#f8f9fa", borderRadius: "10px", border: "1px solid #e9ecef" }}>
               {(totalDiscount > 0 || prPackageApplied || giftDiscount > 0) ? (
@@ -540,12 +540,12 @@ export default function CartPage() {
                       <span style={{ color: "#28a745", fontWeight: "bold" }}>- NT$ {totalDiscount}</span>
                     </div>
                   )}
-                  {giftDiscount > 0 && !prPackageApplied && (
+                  {/*giftDiscount > 0 && !prPackageApplied && (
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
                       <span style={{ color: "#ff9800" }}>滿千贈品：</span>
                       <span style={{ color: "#ff9800", fontWeight: "bold" }}>- NT$ {giftDiscount}</span>
                     </div>
-                  )}
+                  )*/}
                   {prPackageApplied && (
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
                       <span style={{ color: "#667eea" }}>公關品：</span>
