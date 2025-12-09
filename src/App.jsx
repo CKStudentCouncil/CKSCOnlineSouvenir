@@ -28,7 +28,7 @@ const InfoPage = InformationPage;
 
 const starttime = new Date("2025-11-05T12:00:00+08:00");
 //const endtime = new Date("2025-11-20T11:00:59+08:00");
-const endtime = new Date("2025-12-06T18:00:00+08:00");
+const endtime = new Date("2025-12-14T23:59:00+08:00");
 const now = new Date();
 const isAfterStartTime = now >= starttime;
 const isAfterEndTime = now >= endtime;

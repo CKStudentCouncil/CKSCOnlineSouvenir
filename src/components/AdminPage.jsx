@@ -13,6 +13,7 @@ export default function AdminPage() {
   const [paidOrders, setPaidOrders] = useState([]);
   
   const [user] = useAuthState(auth);
+  const [searchTerm, setSearchTerm] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
   const [checkingAdmin, setCheckingAdmin] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -34,6 +35,17 @@ export default function AdminPage() {
     "建中家長會",
     "其他學校或社會人士"
   ];
+  
+  const filteredUsers = orders.filter(order => {
+    const matchesSearch = 
+      order.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.displayName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.classNumber?.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.classandnumber?.toLowerCase().includes(searchTerm.toLowerCase())
+    
+    return matchesSearch;
+});
 
   useEffect(() => {
     if (!user) return;
@@ -722,6 +734,35 @@ export default function AdminPage() {
           <option value="paid">已付款</option>
           <option value="unpaid">未付款</option>
         </select>
+      </div>
+      
+      <div style={{
+          background: "white",
+          padding: "20px",
+          borderRadius: "12px",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+          marginBottom: "20px"
+        }}>
+          <div style={{
+            display: "flex",
+            gap: "16px",
+            flexWrap: "wrap"
+          }}>
+            <input
+              type="text"
+              placeholder="搜尋使用者 (Email 或姓名)"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                flex: 1,
+                minWidth: "250px",
+                padding: "12px 16px",
+                border: "2px solid #ddd",
+                borderRadius: "8px",
+                fontSize: "1rem"
+              }}
+            />
+          </div>
       </div>
 
       {/* 分頁切換 */}

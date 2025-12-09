@@ -9,7 +9,7 @@ export default function Home() {
 
   return (
     <div style={{ padding: "20px" }}>
-      <div
+      {/*<div
         style={{
           marginBottom: "30px",
           padding: "25px",
@@ -41,7 +41,7 @@ export default function Home() {
         >
           限時優惠，只有在校慶當天享有！
           </p>
-      </div>
+      </div>*/}
       {/* 套餐說明 
       <div
         style={{

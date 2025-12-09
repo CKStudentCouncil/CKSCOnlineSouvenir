@@ -52,15 +52,9 @@ export default function EndPage() {
                         padding: "0 50px",
                     }}
                 >
-                    本次網路預購服務已結束<br />
-                    感謝您的支持<br />
-                    如您仍有購買需求<br />
-                    <div style={{color: "red"}}>請於校慶當日至班聯會攤位選購<br /><br /></div>
-                    Thank you for your support!<br />
-                    The online pre-order service has ended.<br /><br />
-                    <strong style={{color:"#0c1b7a", fontSize:"24px"}}>校慶日期：2025年12月06日（六）<br />
-                    攤位編號：62, 63<br /></strong><br />
-                    <p style={{textAlign:"right", fontSize:"20px"}}>建國中學班聯會80屆<br />Taipei Municipal<br />Chien Kuo High School<br />Student Council</p>
+                    本次校慶紀念品訂購服務已結束<br />
+                    感謝您的支持<br />敬請留意後續班聯會Instagram帳號公告<br /><br />
+                    <div style={{textAlign:"right", fontSize:"20px"}}>建國中學班聯會80屆<br />Taipei Municipal<br />Chien Kuo High School<br />Student Council</div>
                 </p>                    
             </div>
         </div>
