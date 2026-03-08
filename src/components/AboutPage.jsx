@@ -34,7 +34,7 @@ export default function ProductPage() {
         </p>
         <br />
         <div style={{ color: "#000000ff", marginBottom: "24px" }}>
-            聯絡方式：
+            聯絡方式：(有關校慶紀念品請寄信至公務信箱，針對系統之建議請寄信至個人信箱)
             <ul>
             <li>主席孫逢邦：chris20090731@gmail.com</li>
             <br />
