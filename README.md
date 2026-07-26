@@ -1,5 +1,5 @@
 # React + Vite
-
+This is the 1.0 version, link to 2.0 https://github.com/CKStudentCouncil/Souvenir.git
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
